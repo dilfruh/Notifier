@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Notifier</string>
+    <string-array name="vibrateArray">
+        <item>none</item>
+        <item>1 long</item>
+        <item>1 short</item>
+        <item>2 long</item>
+        <item>2 short</item>
+        <item>3 long</item>
+        <item>3 short</item>
+        <item>1 short, 1 long</item>
+        <item>2 short, 1 long</item>
+    </string-array>
+</resources>
