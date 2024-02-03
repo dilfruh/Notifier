@@ -145,5 +145,6 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+        <!-- Here, our MainActivity will insert the list of all the apps we've given custom notifications to and the info about those -->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

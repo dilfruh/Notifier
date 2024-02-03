@@ -14,7 +14,9 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 
-
+/**
+ * This is where most of the action happens
+ */
 class MainActivity : AppCompatActivity() {
     //Set up buttons, textViews, editTexts, spinners, checkboxes
     var text1: TextView? = null
@@ -26,7 +28,9 @@ class MainActivity : AppCompatActivity() {
     var vibrateSpinner: Spinner? = null
     var edgeCheck: CheckBox? = null
 
-    //Function to get list of notification channels used every time app created, create button pressed, or delete button pressed
+    /**
+     * Get and display list of notification channels. Call this every time app created, create button pressed, or delete button pressed
+     */
     private fun getList() {
         //Get list of notification channels
         var list1: List<NotificationChannel>
@@ -114,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //When app created
+    //When app is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -129,6 +133,17 @@ class MainActivity : AppCompatActivity() {
         edgeCheck = findViewById<CheckBox>(R.id.edgeCheck)
 
         //Create spinner (drop down menu)
+        vibrateSpinner = findViewById<Spinner>(R.id.vibrateSpinner)
+        // Create an ArrayAdapter using the string array defined in strings.xml and spinner layout you created
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.vibrateArray, R.layout.spinner
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(R.layout.spinner)
+            // Apply the adapter to the spinner (!! is just as long as it's not null)
+            vibrateSpinner!!.adapter = adapter
+        }
 
         /* Old way in which we can't change text size
         vibrateSpinner = findViewById(R.id.vibrateSpinner) as Spinner
@@ -144,41 +159,30 @@ class MainActivity : AppCompatActivity() {
             vibrateSpinner!!.adapter = adapter
         }*/
 
-        //New way
-        vibrateSpinner = findViewById<Spinner>(R.id.vibrateSpinner)
-        // Create an ArrayAdapter using the string array defined in strings.xml and spinner layout you created
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.vibrateArray, R.layout.spinner
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(R.layout.spinner)
-            // Apply the adapter to the spinner (!! is just as long as it's not null)
-            vibrateSpinner!!.adapter = adapter
-        }
-
         //Update list of notification channels using function defined earlier
         getList()
-
-        //Create Notification Listener
-        //NotificationService().setListener(this)
-
     }
 
-    //When notification access button clicked
+    /**
+     * When app instructions button is clicked, start InstructionsActivity to show the instructions
+     */
     fun instructionsClicked(view: View) {
         val intent = Intent(this, InstructionsActivity::class.java).apply {
         }
         startActivity(intent)
     }
 
-    //When notification access button clicked
+    /**
+     * When notification access button is clicked, go to the setting to grant app access to notifications
+     */
     fun accessClicked(view: View) {
         val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
         startActivity(intent)
     }
 
-    //When test vibration button clicked
+    /**
+     * When the test vibration button is clicked, vibrate the phone with the selected pattern so users can see what it will feel like
+     */
     fun vibrateClicked(view: View) {
         //Vibration option selected
         val choice = vibrateSpinner?.selectedItem.toString()
@@ -238,7 +242,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //When delete button clicked
+    /**
+     * When the delete button is clicked, delete the notification settinsg for the app name that is currently typed
+     */
     fun deleteClicked(view: View) {
         //Get name from editText field and convert to String
         val name: String = editAppName?.text.toString()
@@ -268,7 +274,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //When create button clicked
+    /**
+     * When the create button is clicked, create a vibration and edge lighting for the info typed/selected
+     */
     fun createClicked(view: View) {
         //Get name from editText field and convert to String
         val name: String = editAppName?.getText().toString()

@@ -13,6 +13,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
+/**
+ * This overrides the default NotificationListenerService so we can intercept notifications coming in from other apps and create our own with our custom vibration patterns and lighting
+ */
 class NotificationService : NotificationListenerService() {
     //Create Tag and contexts which aren't that important to know about
     private val TAG = this.javaClass.simpleName
@@ -96,12 +99,12 @@ class NotificationService : NotificationListenerService() {
         //requestRebind();
     }
 
-    //Create setListener function to create listener
-    /*fun setListener(myListener: MyListener?) {
-        Companion.myListener = myListener
-    }*/
-
-    fun sendNotif(notifAppName: String?, notifTitle: String?) {
+    /**
+     * Send a notification for notifAppName with notifTitle
+     * @param notifAppName the name of the app
+     * @param notifTitle the text displayed in the notification
+     */
+    private fun sendNotif(notifAppName: String?, notifTitle: String?) {
         //Get list of notification channels
         var list1: List<NotificationChannel> = ArrayList()
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
