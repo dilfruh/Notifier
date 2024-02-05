@@ -63,7 +63,7 @@
             android:inputType="text"
         />
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/vibrationText"
             android:text="Vibration pattern:"
             android:textSize="22sp"
             android:textColor="@color/black"
@@ -79,7 +79,7 @@
             android:textSize="22sp"
             android:backgroundTint="@color/colorPrimary"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/text1"
+            app:layout_constraintTop_toBottomOf="@id/vibrationText"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
@@ -121,12 +121,12 @@
             android:layout_height="50dp"
             android:src='@drawable/outline_info_24'
             android:contentDescription="Info for edge lighting"
-            app:tint="@color/colorPrimary"
+            app:tint="@color/colorAccent"
             style="?android:attr/borderlessButtonStyle"
             app:layout_constraintTop_toTopOf="@id/edgeCheck"
             app:layout_constraintBottom_toBottomOf="@id/edgeCheck"
             app:layout_constraintLeft_toRightOf="@id/edgeCheck"
-            android:onClick="instructionsClicked"
+            android:onClick="infoClicked"
         />
         <Button
             android:id="@+id/createButton"
@@ -160,8 +160,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
         />
+        <!-- Here, our MainActivity will insert the list of all the apps we've given custom notifications to and the info about those -->
         <TextView
-            android:id="@+id/text2"
+            android:id="@+id/notificationList"
             android:text="\nCurrent notifications:"
             android:textSize="22sp"
             android:textColor="@color/black"
@@ -171,6 +172,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
         />
-        <!-- Here, our MainActivity will insert the list of all the apps we've given custom notifications to and the info about those -->
+        <!-- This is the tooltip. I thought putting it at the bottom would make it show over everything, but it doesn't. You need elevation -->
+        <TextView
+            android:id="@+id/infoTooltip"
+            android:text="@string/edge_lighting"
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/infoIcon"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/roundstyle"
+            android:backgroundTint="#D3D3D3"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
+            android:visibility="gone"
+            android:elevation="10dp"
+        />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
