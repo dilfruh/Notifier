@@ -13,7 +13,8 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
-        android:paddingBottom="25dp">
+        android:paddingBottom="25dp"
+    >
         <Button
             android:id="@+id/instructionsButton"
             android:text="App Instructions"
@@ -28,7 +29,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <!-- Using both left and right centers it -->
         <Button
             android:id="@+id/accessButton"
@@ -45,7 +47,8 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <EditText
             android:id="@+id/editAppName"
             android:hint="App Name"
@@ -56,7 +59,8 @@
             android:layout_marginTop="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="text"
+        />
         <TextView
             android:id="@+id/text1"
             android:text="Vibration pattern:"
@@ -67,7 +71,8 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <Spinner
             android:id="@+id/vibrateSpinner"
             android:textSize="22sp"
@@ -77,7 +82,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+        />
         <Button
             android:id="@+id/vibrateButton"
             android:text="Test vibration"
@@ -93,7 +99,8 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <CheckBox
             android:id="@+id/edgeCheck"
             android:text="Edge Lighting"
@@ -105,7 +112,8 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <ImageButton
             android:id="@+id/infoIcon"
             android:layout_width="50dp"
@@ -114,7 +122,7 @@
             app:layout_constraintTop_toBottomOf="@id/vibrateButton"
             app:layout_constraintLeft_toRightOf="@id/edgeCheck"
             android:onClick="instructionsClicked"
-            />
+        />
         <Button
             android:id="@+id/createButton"
             android:text="Create/Edit"
@@ -129,7 +137,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <Button
             android:id="@+id/deleteButton"
             android:text="Delete"
@@ -144,7 +153,8 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <TextView
             android:id="@+id/text2"
             android:text="\nCurrent notifications:"
@@ -154,7 +164,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <!-- Here, our MainActivity will insert the list of all the apps we've given custom notifications to and the info about those -->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
