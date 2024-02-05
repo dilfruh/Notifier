@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     var editAppName: EditText? = null
     var vibrateSpinner: Spinner? = null
     var edgeCheck: CheckBox? = null
+    var infoIcon: ImageButton? = null
 
     /**
      * Get and display list of notification channels. Call this every time app created, create button pressed, or delete button pressed
@@ -131,6 +132,7 @@ class MainActivity : AppCompatActivity() {
         createButton = findViewById<Button>(R.id.createButton)
         editAppName = findViewById<EditText>(R.id.editAppName)
         edgeCheck = findViewById<CheckBox>(R.id.edgeCheck)
+        infoIcon = findViewById<ImageButton>(R.id.infoIcon)
 
         //Create spinner (drop down menu)
         vibrateSpinner = findViewById<Spinner>(R.id.vibrateSpinner)
