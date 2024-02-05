@@ -119,6 +119,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src='@drawable/icon'
+            android:contentDescription="Info for edge lighting"
             app:layout_constraintTop_toBottomOf="@id/vibrateButton"
             app:layout_constraintLeft_toRightOf="@id/edgeCheck"
             android:onClick="instructionsClicked"
