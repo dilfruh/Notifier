@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"/>
         <CheckBox
             android:id="@+id/edgeCheck"
-            android:text="Edge Lighting?"
+            android:text="Edge Lighting"
             android:textSize="22sp"
             android:buttonTint="#FFA500"
             android:checked="true"
