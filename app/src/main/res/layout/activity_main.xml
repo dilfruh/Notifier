@@ -105,6 +105,15 @@
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+        <ImageButton
+            android:id="@+id/infoIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src='@drawable/icon'
+            app:layout_constraintTop_toBottomOf="@id/vibrateButton"
+            app:layout_constraintLeft_toRightOf="@id/edgeCheck"
+            android:onClick="instructionsClicked"
+            />
         <Button
             android:id="@+id/createButton"
             android:text="Create/Edit"
