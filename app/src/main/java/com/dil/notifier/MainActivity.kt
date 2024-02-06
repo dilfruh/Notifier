@@ -19,14 +19,16 @@ import androidx.appcompat.app.AppCompatActivity
  */
 class MainActivity : AppCompatActivity() {
     //Set up buttons, textViews, editTexts, spinners, checkboxes
-    var text1: TextView? = null
-    var text2: TextView? = null
+    var vibrationText: TextView? = null
+    var notificationList: TextView? = null
     var instructionsButton: Button? = null
     var accessButton: Button? = null
     var createButton: Button? = null
     var editAppName: EditText? = null
     var vibrateSpinner: Spinner? = null
     var edgeCheck: CheckBox? = null
+    var infoIcon: ImageButton? = null
+    var infoTooltip: TextView? = null
 
     /**
      * Get and display list of notification channels. Call this every time app created, create button pressed, or delete button pressed
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         list1.sortBy { it.name?.toString() }
 
         //Add name of each channel to TextView3
-        text2?.text = "\nCurrent Notifications:"
+        notificationList?.text = "\nCurrent Notifications:"
         for (notif in list1) { //For every item in list1, we will name it notif
             //Get vibration pattern
             var vibrationText = ""
@@ -94,10 +96,10 @@ class MainActivity : AppCompatActivity() {
                 sb.setSpan(UnderlineSpan(), 0, appName.length, 0)
 
                 //Say the app name, edge lighting, and vibration text
-                text2?.append("\n\n")
-                text2?.append(sb)
-                text2?.append(": Yes Edge Lighting,")
-                text2?.append(vibrationText)
+                notificationList?.append("\n\n")
+                notificationList?.append(sb)
+                notificationList?.append(": Yes Edge Lighting,")
+                notificationList?.append(vibrationText)
             }
             else if (notifName.contains(" Screen Off (No Edge Lighting)")){
                 //Isolate just app name
@@ -109,10 +111,10 @@ class MainActivity : AppCompatActivity() {
                 sb.setSpan(UnderlineSpan(), 0, appName.length, 0)
 
                 //Say the app name, edge lighting, and vibration text
-                text2?.append("\n\n")
-                text2?.append(sb)
-                text2?.append(": No Edge Lighting,")
-                text2?.append(vibrationText)
+                notificationList?.append("\n\n")
+                notificationList?.append(sb)
+                notificationList?.append(": No Edge Lighting,")
+                notificationList?.append(vibrationText)
             }
             //Don't want to do for ScreenOn because then we'd repeat app names
         }
@@ -124,13 +126,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //Create buttons, textViews, editTexts, checkboxes
-        text1 = findViewById<TextView>(R.id.text1)
-        text2 = findViewById<TextView>(R.id.text2)
+        vibrationText = findViewById<TextView>(R.id.vibrationText)
+        notificationList = findViewById<TextView>(R.id.notificationList)
         instructionsButton = findViewById<Button>(R.id.instructionsButton)
         accessButton = findViewById<Button>(R.id.accessButton)
         createButton = findViewById<Button>(R.id.createButton)
         editAppName = findViewById<EditText>(R.id.editAppName)
         edgeCheck = findViewById<CheckBox>(R.id.edgeCheck)
+        infoIcon = findViewById<ImageButton>(R.id.infoIcon)
+        infoTooltip = findViewById<TextView>(R.id.infoTooltip)
 
         //Create spinner (drop down menu)
         vibrateSpinner = findViewById<Spinner>(R.id.vibrateSpinner)
@@ -240,6 +244,15 @@ class MainActivity : AppCompatActivity() {
                 v.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE))
             }
         }
+    }
+
+    /**
+     * When the info icon next to the edge lighting checkbox is clicked, show what it means
+     */
+    fun infoClicked(view: View) {
+        // Hide or show the tooltip
+        if (infoTooltip?.visibility == View.GONE) infoTooltip?.visibility = View.VISIBLE
+        else infoTooltip?.visibility = View.GONE
     }
 
     /**
