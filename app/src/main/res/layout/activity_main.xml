@@ -13,21 +13,24 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
-        android:paddingBottom="25dp">
+        android:paddingBottom="25dp"
+    >
         <Button
             android:id="@+id/instructionsButton"
             android:text="App Instructions"
             android:textSize="22sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:background="@drawable/roundstyle"
             android:backgroundTint="@color/colorPrimary"
             android:onClick="instructionsClicked"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <!-- Using both left and right centers it -->
         <TextView
             android:id="@+id/accessText"
@@ -46,7 +49,7 @@
             android:id="@+id/accessButton"
             android:text="Give Notification Access"
             android:textSize="22sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:background="@drawable/roundstyle"
@@ -57,10 +60,12 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <EditText
             android:id="@+id/editAppName"
             android:hint="App Name"
+            android:textColor="@color/black"
             android:textSize="22sp"
             app:layout_constraintTop_toBottomOf="@id/accessButton"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -68,33 +73,36 @@
             android:layout_marginTop="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"/>
+            android:inputType="text"
+        />
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/vibrationText"
             android:text="Vibration pattern:"
             android:textSize="22sp"
-            android:textColor="@color/blackColor"
+            android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@id/editAppName"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <Spinner
             android:id="@+id/vibrateSpinner"
             android:textSize="22sp"
             android:backgroundTint="@color/colorPrimary"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@id/text1"
+            app:layout_constraintTop_toBottomOf="@id/vibrationText"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+        />
         <Button
             android:id="@+id/vibrateButton"
             android:text="Test vibration"
             android:textSize="22sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:background="@drawable/roundstyle"
@@ -105,59 +113,97 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <CheckBox
             android:id="@+id/edgeCheck"
-            android:text="Edge Lighting?"
+            android:text="Edge Lighting"
             android:textSize="22sp"
-            android:buttonTint="#FFA500"
+            android:buttonTint="@color/orange"
             android:checked="true"
             app:layout_constraintTop_toBottomOf="@id/vibrateButton"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
+        <ImageButton
+            android:id="@+id/infoIcon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src='@drawable/outline_info_24'
+            android:contentDescription="Info for edge lighting"
+            app:tint="@color/colorAccent"
+            style="?android:attr/borderlessButtonStyle"
+            app:layout_constraintTop_toTopOf="@id/edgeCheck"
+            app:layout_constraintBottom_toBottomOf="@id/edgeCheck"
+            app:layout_constraintLeft_toRightOf="@id/edgeCheck"
+            android:onClick="infoClicked"
+        />
         <Button
             android:id="@+id/createButton"
             android:text="Create/Edit"
             android:textSize="22sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:background="@drawable/roundstyle"
-            android:backgroundTint="#008000"
+            android:backgroundTint="@color/green"
             android:onClick="createClicked"
             app:layout_constraintTop_toBottomOf="@id/edgeCheck"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
         <Button
             android:id="@+id/deleteButton"
             android:text="Delete"
             android:textSize="22sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:background="@drawable/roundstyle"
-            android:backgroundTint="#FF0000"
+            android:backgroundTint="@color/red"
             android:onClick="deleteClicked"
             app:layout_constraintTop_toBottomOf="@id/edgeCheck"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+        />
+        <!-- Here, our MainActivity will insert the list of all the apps we've given custom notifications to and the info about those -->
         <TextView
-            android:id="@+id/text2"
+            android:id="@+id/notificationList"
             android:text="\nCurrent notifications:"
             android:textSize="22sp"
-            android:textColor="@color/blackColor"
+            android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@id/deleteButton"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <!-- Here, our MainActivity will insert the list of all the apps we've given custom notifications to and the info about those -->
+            android:layout_height="wrap_content"
+        />
+        <!-- This is the tooltip. I thought putting it at the bottom would make it show over everything, but it doesn't. You need elevation -->
+        <TextView
+            android:id="@+id/infoTooltip"
+            android:text="@string/edge_lighting"
+            android:textSize="22sp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/infoIcon"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/roundstyle"
+            android:backgroundTint="#D3D3D3"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
+            android:visibility="gone"
+            android:elevation="10dp"
+        />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
