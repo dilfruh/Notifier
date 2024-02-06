@@ -13,12 +13,14 @@ import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 
 /**
  * This is where most of the action happens
  */
 class MainActivity : AppCompatActivity() {
     //Set up buttons, textViews, editTexts, spinners, checkboxes
+    var accessText: TextView? = null
     var vibrationText: TextView? = null
     var notificationList: TextView? = null
     var instructionsButton: Button? = null
@@ -120,12 +122,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * checks to see if you have given permission to read notifications, and shows that you need to if not
+     */
+    private fun getNotificationAccess() {
+        val pkgName: String = this.getPackageName()
+        val listeners: MutableSet<String> = NotificationManagerCompat.getEnabledListenerPackages(this)
+        if (listeners?.contains(pkgName)) {
+            accessButton?.visibility = View.GONE
+            accessText?.visibility = View.GONE
+        }
+        else {
+            accessButton?.visibility = View.VISIBLE
+            accessText?.visibility = View.VISIBLE
+        }
+        // This doesn't seem to work
+        /*
+        val permission = ContextCompat.checkSelfPermission(this, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)
+        if (permission == PackageManager.PERMISSION_GRANTED) accessButton?.visibility = View.GONE
+        else accessButton?.visibility = View.VISIBLE
+        */
+    }
+
     //When app is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         //Create buttons, textViews, editTexts, checkboxes
+        accessText = findViewById<TextView>(R.id.accessText)
         vibrationText = findViewById<TextView>(R.id.vibrationText)
         notificationList = findViewById<TextView>(R.id.notificationList)
         instructionsButton = findViewById<Button>(R.id.instructionsButton)
@@ -165,6 +190,15 @@ class MainActivity : AppCompatActivity() {
 
         //Update list of notification channels using function defined earlier
         getList()
+
+        // Check to see if they have granted permission to notification access
+        getNotificationAccess()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // We have to do this here also so if they gave access and came back, the UI updates
+        getNotificationAccess()
     }
 
     /**
