@@ -12,6 +12,7 @@ import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 
@@ -298,26 +299,37 @@ class MainActivity : AppCompatActivity() {
 
         //Delete as long as user inputted a name
         if (name != "") {
-            //Get list of notification channels
-            var list1: List<NotificationChannel> = ArrayList()
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            list1 = notificationManager.notificationChannels
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder
+                .setMessage("Delete your custom notification for " + name + "?")
+                .setTitle("Are you sure?")
+                .setPositiveButton("Delete") { dialog, which ->
+                    //Get list of notification channels
+                    var list1: List<NotificationChannel> = ArrayList()
+                    val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                    list1 = notificationManager.notificationChannels
 
-            for (notif in list1) {
-                val notifName = notif.id
-                if (notifName.startsWith(name + "ScreenOn")) {
-                    notificationManager.deleteNotificationChannel(notifName)
+                    for (notif in list1) {
+                        val notifName = notif.id
+                        if (notifName.startsWith(name + "ScreenOn")) {
+                            notificationManager.deleteNotificationChannel(notifName)
+                        }
+                        if (notifName.startsWith(name + "ScreenOff")) {
+                            notificationManager.deleteNotificationChannel(notifName)
+                        }
+                    }
+
+                    //Tell user it's been deleted
+                    Toast.makeText(this, name + " notification deleted", Toast.LENGTH_SHORT).show()
+
+                    //Update list of notification channels using function defined earlier
+                    getList()
                 }
-                if (notifName.startsWith(name + "ScreenOff")) {
-                    notificationManager.deleteNotificationChannel(notifName)
+                .setNegativeButton("Cancel") { dialog, which ->
+                    // Do nothing
                 }
-            }
-
-            //Tell user it's been deleted
-            Toast.makeText(applicationContext, name + " notification deleted", Toast.LENGTH_SHORT).show()
-
-            //Update list of notification channels using function defined earlier
-            getList()
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
         }
     }
 
@@ -426,7 +438,7 @@ class MainActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(mChannel2)
 
             //Tell user it's been created
-            Toast.makeText(applicationContext, name + " notification created", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, name + " notification created", Toast.LENGTH_SHORT).show()
 
             //Update list of notification channels using function defined earlier
             getList()
