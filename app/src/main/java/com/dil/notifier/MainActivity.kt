@@ -15,6 +15,8 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * This is where most of the action happens
@@ -145,6 +147,47 @@ class MainActivity : AppCompatActivity() {
         */
     }
 
+    /**
+     * When the delete button is clicked, delete the notification settinsg for the app name that is currently typed
+     */
+    fun deleteNotification(name: String) {
+        //Delete as long as user inputted a name
+        if (name != "") {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder
+                .setMessage("Delete your custom notification for " + name + "?")
+                .setTitle("Are you sure?")
+                .setPositiveButton("Delete") { dialog, which ->
+                    //Get list of notification channels
+                    var list1: List<NotificationChannel> = ArrayList()
+                    val notificationManager =
+                        getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                    list1 = notificationManager.notificationChannels
+
+                    for (notif in list1) {
+                        val notifName = notif.id
+                        if (notifName.startsWith(name + "ScreenOn")) {
+                            notificationManager.deleteNotificationChannel(notifName)
+                        }
+                        if (notifName.startsWith(name + "ScreenOff")) {
+                            notificationManager.deleteNotificationChannel(notifName)
+                        }
+                    }
+
+                    //Tell user it's been deleted
+                    Toast.makeText(this, name + " notification deleted", Toast.LENGTH_SHORT).show()
+
+                    //Update list of notification channels using function defined earlier
+                    getList()
+                }
+                .setNegativeButton("Cancel") { dialog, which ->
+                    // Do nothing
+                }
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+        }
+    }
+
     //When app is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -191,6 +234,14 @@ class MainActivity : AppCompatActivity() {
 
         //Update list of notification channels using function defined earlier
         getList()
+
+        var notifications = listOf(NotificationData("1", "One") { deleteNotification("test2") })
+        val notiList: RecyclerView = findViewById(R.id.notiList)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val myAdapter = NotificationListAdapter(notifications)
+        notiList.adapter = myAdapter
+        notiList.layoutManager = layoutManager
+        myAdapter.notifyDataSetChanged()
 
         // Check to see if they have granted permission to notification access
         getNotificationAccess()
@@ -288,49 +339,6 @@ class MainActivity : AppCompatActivity() {
         // Hide or show the tooltip
         if (infoTooltip?.visibility == View.GONE) infoTooltip?.visibility = View.VISIBLE
         else infoTooltip?.visibility = View.GONE
-    }
-
-    /**
-     * When the delete button is clicked, delete the notification settinsg for the app name that is currently typed
-     */
-    fun deleteClicked(view: View) {
-        //Get name from editText field and convert to String
-        val name: String = editAppName?.text.toString()
-
-        //Delete as long as user inputted a name
-        if (name != "") {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            builder
-                .setMessage("Delete your custom notification for " + name + "?")
-                .setTitle("Are you sure?")
-                .setPositiveButton("Delete") { dialog, which ->
-                    //Get list of notification channels
-                    var list1: List<NotificationChannel> = ArrayList()
-                    val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                    list1 = notificationManager.notificationChannels
-
-                    for (notif in list1) {
-                        val notifName = notif.id
-                        if (notifName.startsWith(name + "ScreenOn")) {
-                            notificationManager.deleteNotificationChannel(notifName)
-                        }
-                        if (notifName.startsWith(name + "ScreenOff")) {
-                            notificationManager.deleteNotificationChannel(notifName)
-                        }
-                    }
-
-                    //Tell user it's been deleted
-                    Toast.makeText(this, name + " notification deleted", Toast.LENGTH_SHORT).show()
-
-                    //Update list of notification channels using function defined earlier
-                    getList()
-                }
-                .setNegativeButton("Cancel") { dialog, which ->
-                    // Do nothing
-                }
-            val dialog: AlertDialog = builder.create()
-            dialog.show()
-        }
     }
 
     /**
