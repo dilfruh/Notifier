@@ -7,7 +7,7 @@ This is an Android app (minimum Android 10) that gives custom vibration patterns
 2. If you have edge lighting, go into it in your phone settings, turn on Notifier, and add Keywords that are the app names sending the notifications you want lit up and choose the color you want.
 3. Back in Notifier, type the app name, choose a vibration pattern (which you can test out), and select if you want it to use edge lighting when the screen is off (if you don't have edge lighting on your phone, this will wake the screen). Then hit Create/Edit.
 4. Turn off vibration for the other apps you want to replace vibration patterns. Then set their sound to silent because even if you have vibrate off, it will convert a sound to a vibration if your phone is in vibrate mode (but keep the notification importance on Alert so you can still get the popup). Then you should set your sound in the notification channels in Notifier. Yes you lose individual different sounds for different channels in the same app :(
-5. To delete an existing app from your list, just type in its name and press the Delete button.
+5. To delete an existing app from your list, just hit the trash icon next to it. To edit one, do the same thing as you would for creating.
 
 ### Notes:
 1. The app name should be exactly as it appears below the app's icon on your home screen/app drawer.

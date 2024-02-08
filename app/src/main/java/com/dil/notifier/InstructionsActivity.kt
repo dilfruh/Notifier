@@ -11,7 +11,7 @@ class InstructionsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instructions)
 
-        //Change the title of the action bar at the top
+        // Change the title of the action bar at the top
         supportActionBar?.title = "Instructions"
     }
 }

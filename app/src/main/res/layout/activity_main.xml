@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- Make app scrollable -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -153,21 +154,6 @@
             android:onClick="createClicked"
             app:layout_constraintTop_toBottomOf="@id/edgeCheck"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-        />
-        <Button
-            android:id="@+id/deleteButton"
-            android:text="Delete"
-            android:textSize="22sp"
-            android:textColor="@color/white"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:background="@drawable/roundstyle"
-            android:backgroundTint="@color/red"
-            android:onClick="deleteClicked"
-            app:layout_constraintTop_toBottomOf="@id/edgeCheck"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
@@ -175,14 +161,24 @@
         />
         <!-- Here, our MainActivity will insert the list of all the apps we've given custom notifications to and the info about those -->
         <TextView
-            android:id="@+id/notificationList"
-            android:text="\nCurrent notifications:"
-            android:textSize="22sp"
+            android:id="@+id/listHeader"
+            android:text="Current Notifications:"
+            android:textSize="28sp"
             android:textColor="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/deleteButton"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/createButton"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="25dp"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notificationList"
+            app:layout_constraintTop_toBottomOf="@id/listHeader"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
         />
         <!-- This is the tooltip. I thought putting it at the bottom would make it show over everything, but it doesn't. You need elevation -->

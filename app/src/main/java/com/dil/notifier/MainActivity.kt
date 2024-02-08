@@ -6,23 +6,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
-import android.text.style.UnderlineSpan
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * This is where most of the action happens
  */
 class MainActivity : AppCompatActivity() {
-    //Set up buttons, textViews, editTexts, spinners, checkboxes
+    // Set up buttons, textViews, editTexts, spinners, checkboxes, etc.
     var accessText: TextView? = null
     var vibrationText: TextView? = null
-    var notificationList: TextView? = null
+    var listHeader: TextView? = null
+    var infoTooltip: TextView? = null
     var instructionsButton: Button? = null
     var accessButton: Button? = null
     var createButton: Button? = null
@@ -30,97 +30,21 @@ class MainActivity : AppCompatActivity() {
     var vibrateSpinner: Spinner? = null
     var edgeCheck: CheckBox? = null
     var infoIcon: ImageButton? = null
-    var infoTooltip: TextView? = null
+    var notificationList: RecyclerView? = null
+    val myAdapter = NotificationListAdapter()
 
-    /**
-     * Get and display list of notification channels. Call this every time app created, create button pressed, or delete button pressed
-     */
-    private fun getList() {
-        //Get list of notification channels
-        var list1: List<NotificationChannel>
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        list1 = notificationManager.notificationChannels
-        //Sort list alphabetically by name
-        list1.sortBy { it.name?.toString() }
-
-        //Add name of each channel to TextView3
-        notificationList?.text = "\nCurrent Notifications:"
-        for (notif in list1) { //For every item in list1, we will name it notif
-            //Get vibration pattern
-            var vibrationText = ""
-            val notifPattern = notif.vibrationPattern
-            val none = longArrayOf(0, 0)
-            val oneLong = longArrayOf(0, 1500)
-            val oneShort = longArrayOf(0, 400)
-            val twoLong = longArrayOf(0, 1500, 300, 1500)
-            val twoShort = longArrayOf(0, 300, 200, 300)
-            val threeLong = longArrayOf(0, 1500, 300, 1500, 300, 1500)
-            val threeShort = longArrayOf(0, 200, 200, 200, 200, 200)
-            val oneShortOneLong = longArrayOf(0, 200, 200, 1500)
-            val twoShortOneLong = longArrayOf(0, 200, 200, 200, 200, 1500)
-            if (notifPattern.contentEquals(none)) {
-                vibrationText = " no vibration"
-            }
-            else if (notifPattern.contentEquals(oneLong)) {
-                vibrationText = " 1 long"
-            }
-            else if (notifPattern.contentEquals(oneShort)) {
-                vibrationText = " 1 short"
-            }
-            else if (notifPattern.contentEquals(twoLong)) {
-                vibrationText = " 2 long"
-            }
-            else if (notifPattern.contentEquals(twoShort)) {
-                vibrationText = " 2 short"
-            }
-            else if (notifPattern.contentEquals(threeLong)) {
-                vibrationText = " 3 long"
-            }
-            else if (notifPattern.contentEquals(threeShort)) {
-                vibrationText = " 3 short"
-            }
-            else if (notifPattern.contentEquals(oneShortOneLong)) {
-                vibrationText = " 1 short, 1 long"
-            }
-            else if (notifPattern.contentEquals(twoShortOneLong)) {
-                vibrationText = " 2 short, 1 long"
-            }
-
-            val notifName = notif.name.toString()
-            //Say if there is supposed to be edge lighting and add vibration pattern
-            if (notifName.contains(" Screen Off (With Edge Lighting)")){
-                //Isolate just app name
-                val appName = notifName.replace(" Screen Off (With Edge Lighting)", "")
-
-                //Make the app name bold and underlined
-                val sb: Spannable = SpannableString(appName)
-                sb.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, appName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                sb.setSpan(UnderlineSpan(), 0, appName.length, 0)
-
-                //Say the app name, edge lighting, and vibration text
-                notificationList?.append("\n\n")
-                notificationList?.append(sb)
-                notificationList?.append(": Yes Edge Lighting,")
-                notificationList?.append(vibrationText)
-            }
-            else if (notifName.contains(" Screen Off (No Edge Lighting)")){
-                //Isolate just app name
-                val appName = notifName.replace(" Screen Off (No Edge Lighting)", "")
-
-                //Make the app name bold and underlined
-                val sb: Spannable = SpannableString(appName)
-                sb.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, appName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                sb.setSpan(UnderlineSpan(), 0, appName.length, 0)
-
-                //Say the app name, edge lighting, and vibration text
-                notificationList?.append("\n\n")
-                notificationList?.append(sb)
-                notificationList?.append(": No Edge Lighting,")
-                notificationList?.append(vibrationText)
-            }
-            //Don't want to do for ScreenOn because then we'd repeat app names
-        }
-    }
+    // Vibration patterns
+    val vibrations = arrayOf(
+        vibrationData("none", longArrayOf(0, 0)),
+        vibrationData("1 long", longArrayOf(0, 1500)), // 0 sec off, 1.5 sec on, sec off, etc.
+        vibrationData("1 short", longArrayOf(0, 400)),
+        vibrationData("2 long", longArrayOf(0, 1500, 300, 1500)),
+        vibrationData("2 short", longArrayOf(0, 300, 200, 300)),
+        vibrationData("3 long", longArrayOf(0, 1500, 300, 1500, 300, 1500)),
+        vibrationData("3 short", longArrayOf(0, 200, 200, 200, 200, 200)),
+        vibrationData("1 short, 1 long", longArrayOf(0, 200, 200, 1500)),
+        vibrationData("2 short, 1 long", longArrayOf(0, 200, 200, 200, 200, 1500))
+    )
 
     /**
      * checks to see if you have given permission to read notifications, and shows that you need to if not
@@ -144,35 +68,53 @@ class MainActivity : AppCompatActivity() {
         */
     }
 
-    //When app is created
+    /**
+     * When the delete button is clicked, delete the notification settinsg for the app name that is currently typed
+     */
+    fun deleteNotification(name: String) {
+        // Get list of notification channels
+        var list1: List<NotificationChannel> = ArrayList()
+        val notificationManager =
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        list1 = notificationManager.notificationChannels
+
+        for (notif in list1) {
+            val notifName = notif.id
+            if (notifName.startsWith(name + "ScreenOn")) {
+                notificationManager.deleteNotificationChannel(notifName)
+            }
+            if (notifName.startsWith(name + "ScreenOff")) {
+                notificationManager.deleteNotificationChannel(notifName)
+            }
+        }
+
+        // Tell user it's been deleted
+        Toast.makeText(this, name + " notification deleted", Toast.LENGTH_SHORT).show()
+    }
+
+    // When app is created
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Create buttons, textViews, editTexts, checkboxes
+        // Create buttons, textViews, editTexts, checkboxes, etc.
         accessText = findViewById<TextView>(R.id.accessText)
         vibrationText = findViewById<TextView>(R.id.vibrationText)
-        notificationList = findViewById<TextView>(R.id.notificationList)
+        listHeader = findViewById<TextView>(R.id.listHeader)
+        infoTooltip = findViewById<TextView>(R.id.infoTooltip)
         instructionsButton = findViewById<Button>(R.id.instructionsButton)
         accessButton = findViewById<Button>(R.id.accessButton)
         createButton = findViewById<Button>(R.id.createButton)
         editAppName = findViewById<EditText>(R.id.editAppName)
         edgeCheck = findViewById<CheckBox>(R.id.edgeCheck)
         infoIcon = findViewById<ImageButton>(R.id.infoIcon)
-        infoTooltip = findViewById<TextView>(R.id.infoTooltip)
+        notificationList = findViewById<RecyclerView>(R.id.notificationList)
 
-        //Create spinner (drop down menu)
+        // Create spinner (drop down menu)
         vibrateSpinner = findViewById<Spinner>(R.id.vibrateSpinner)
         // Create an ArrayAdapter using the string array defined in strings.xml and spinner layout you created
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.vibrateArray, R.layout.spinner
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(R.layout.spinner)
-            // Apply the adapter to the spinner (!! is just as long as it's not null)
-            vibrateSpinner!!.adapter = adapter
-        }
+        val vibrationNames = vibrations.map { vib -> vib.name }
+        vibrateSpinner!!.adapter = ArrayAdapter(this, R.layout.spinner, vibrationNames)
 
         /* Old way in which we can't change text size
         vibrateSpinner = findViewById(R.id.vibrateSpinner) as Spinner
@@ -188,11 +130,52 @@ class MainActivity : AppCompatActivity() {
             vibrateSpinner!!.adapter = adapter
         }*/
 
-        //Update list of notification channels using function defined earlier
-        getList()
-
         // Check to see if they have granted permission to notification access
         getNotificationAccess()
+
+        // Show list of notifications
+
+        // Get list of notification channels
+        var list1: List<NotificationChannel>
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        list1 = notificationManager.notificationChannels
+
+        // Get data for each channel
+        for (notif in list1) { // For every item in list1, we will name it notif
+            // Get vibration pattern
+            val notifPattern = notif.vibrationPattern
+            val vibration = vibrations.find { vib -> notifPattern.contentEquals(vib.pattern) }
+            var vibrationText = vibration?.name
+            if (vibrationText == null || vibrationText === "none") vibrationText = "no vibration"
+
+            val notifName = notif.name.toString()
+            // Say if there is supposed to be edge lighting and add vibration pattern
+            if (notifName.contains(" Screen Off (")){
+                // Isolate just app name
+                val appName = notifName.replace(" Screen Off (With Edge Lighting)", "").replace(" Screen Off (No Edge Lighting)", "")
+
+                // Add to notification list
+                val data = NotificationData(appName, vibrationText, notifName.contains(" Screen Off (With Edge Lighting)")) { deleteNotification(appName) } // This is how you pass in a function for a param
+                myAdapter.addNotification(data)
+            }
+            // Don't want to do for ScreenOn because then we'd repeat app names
+        }
+
+        // Add data to list
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        notificationList?.adapter = myAdapter
+        notificationList?.layoutManager = layoutManager
+
+        // Add dividers between items
+        notificationList?.addItemDecoration(
+            DividerItemDecoration(
+                baseContext,
+                layoutManager.orientation
+            )
+        )
+        // We don't have to do this now that we use a SortedList
+        // Update list
+        //myAdapter.notifyDataSetChanged()
     }
 
     override fun onResume() {
@@ -222,61 +205,19 @@ class MainActivity : AppCompatActivity() {
      * When the test vibration button is clicked, vibrate the phone with the selected pattern so users can see what it will feel like
      */
     fun vibrateClicked(view: View) {
-        //Vibration option selected
+        // Vibration option selected
         val choice = vibrateSpinner?.selectedItem.toString()
-        //Set up vibrator
+        // Set up vibrator
         val v = getSystemService(VIBRATOR_SERVICE) as Vibrator
 
-        //Vibrate device based on choice
-        when (choice) {
-            "1 long" -> v.vibrate(
-                VibrationEffect.createOneShot(
-                    1500,
-                    VibrationEffect.DEFAULT_AMPLITUDE
-                )
+        // Vibrate device based on choice
+        val vibration = vibrations.find { vib -> vib.name == choice }
+        if (vibration != null && vibration.name != "none") {
+            // If you try to vibrate with the "none" pattern, it will break
+            // TODO test an actual notification with the none pattern
+            v.vibrate(
+                VibrationEffect.createWaveform(vibration.pattern, -1) // -1 means don't repeat
             )
-            "1 short" -> v.vibrate(
-                VibrationEffect.createOneShot(
-                    400,
-                    VibrationEffect.DEFAULT_AMPLITUDE
-                )
-            )
-            "2 long" -> {
-                v.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(1800) //really wait 300, but have to add in 1500 from previous vibration
-                v.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE))
-            }
-            "2 short" -> {
-                v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(500)
-                v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE))
-            }
-            "3 long" -> {
-                v.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(1800)
-                v.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(1800)
-                v.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE))
-            }
-            "3 short" -> {
-                v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(400)
-                v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(400)
-                v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-            }
-            "1 short, 1 long" -> {
-                v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(400)
-                v.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE))
-            }
-            "2 short, 1 long" -> {
-                v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(400)
-                v.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-                Thread.sleep(400)
-                v.vibrate(VibrationEffect.createOneShot(1500, VibrationEffect.DEFAULT_AMPLITUDE))
-            }
         }
     }
 
@@ -290,48 +231,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * When the delete button is clicked, delete the notification settinsg for the app name that is currently typed
-     */
-    fun deleteClicked(view: View) {
-        //Get name from editText field and convert to String
-        val name: String = editAppName?.text.toString()
-
-        //Delete as long as user inputted a name
-        if (name != "") {
-            //Get list of notification channels
-            var list1: List<NotificationChannel> = ArrayList()
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            list1 = notificationManager.notificationChannels
-
-            for (notif in list1) {
-                val notifName = notif.id
-                if (notifName.startsWith(name + "ScreenOn")) {
-                    notificationManager.deleteNotificationChannel(notifName)
-                }
-                if (notifName.startsWith(name + "ScreenOff")) {
-                    notificationManager.deleteNotificationChannel(notifName)
-                }
-            }
-
-            //Tell user it's been deleted
-            Toast.makeText(applicationContext, name + " notification deleted", Toast.LENGTH_SHORT).show()
-
-            //Update list of notification channels using function defined earlier
-            getList()
-        }
-    }
-
-    /**
      * When the create button is clicked, create a vibration and edge lighting for the info typed/selected
      */
     fun createClicked(view: View) {
-        //Get name from editText field and convert to String
+        // Get name from editText field and convert to String
         val name: String = editAppName?.getText().toString()
 
-        //Create as long as they inputted a name
+        // Create as long as they inputted a name
         if (name != "") {
-
-            //Delete notification channels with that name in case they are editing existing one
+            // Delete notification channels with that name in case they are editing existing one
             var list1: List<NotificationChannel> = ArrayList()
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             list1 = notificationManager.notificationChannels
@@ -345,13 +253,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            //Create channel ids
+            // Create channel ids
             var CHANNEL_ID1 = name + "ScreenOn"
             var name1 = name + " Screen On"
 
-            //Change screen off channel name according to if wake screen is on or off
+            // Change screen off channel name according to if wake screen is on or off
             var CHANNEL_ID2 = ""
             var name2 = ""
+            // TODO !! vs ?
             if (edgeCheck!!.isChecked) { //!! is just safety for non null
                 CHANNEL_ID2 = name + "ScreenOffWakeUp"
                 name2 = name + " Screen Off (With Edge Lighting)"
@@ -360,76 +269,46 @@ class MainActivity : AppCompatActivity() {
                 name2 = name + " Screen Off (No Edge Lighting)"
             }
 
-            //Add vibration pattern chosen to channel ids
+            // Add vibration pattern chosen to channel ids
             val vibrateChoice = vibrateSpinner?.getSelectedItem().toString()
             CHANNEL_ID1 += vibrateChoice
             CHANNEL_ID2 += vibrateChoice
 
-            //Create notification channel for screen on
+            // Create notification channel for screen on
             val importance1 = NotificationManager.IMPORTANCE_DEFAULT //This is no popup
             val mChannel1 = NotificationChannel(CHANNEL_ID1, name1, importance1)
             mChannel1.description = "When the screen is on so no popup"
 
-            //Create notification channel for screen off
+            // Create notification channel for screen off
             val importance2 = NotificationManager.IMPORTANCE_HIGH //This is a popup
             val mChannel2 = NotificationChannel(CHANNEL_ID2, name2, importance2)
             mChannel2.description = "When the screen is off so yes popup"
 
-            //Set vibration patterns for both channels
-            when (vibrateChoice) {
-                "none" -> {
-                    mChannel1.vibrationPattern = longArrayOf(0, 0)
-                    mChannel2.vibrationPattern = longArrayOf(0, 0)
-                    mChannel1.setSound(
-                        null,
-                        null
-                    ) //Silent because they probably also don't wanna change the sound then
+            // Set vibration patterns for both channels
+            val vibration = vibrations.find { vib -> vib.name == vibrateChoice }
+            if (vibration != null) {
+                mChannel1.vibrationPattern = vibration.pattern
+                mChannel2.vibrationPattern = vibration.pattern
+
+                if (vibration.name === "none") {
+                    // Silent because they probably also don't wanna change the sound then
+                    mChannel1.setSound(null, null)
                     mChannel2.setSound(null, null)
-                }
-                "1 long" -> {
-                    mChannel1.vibrationPattern =
-                        longArrayOf(0, 1500) //0 sec off, 1.5 sec on, sec off, etc.
-                    mChannel2.vibrationPattern = longArrayOf(0, 1500)
-                }
-                "1 short" -> {
-                    mChannel1.vibrationPattern = longArrayOf(0, 400)
-                    mChannel2.vibrationPattern = longArrayOf(0, 400)
-                }
-                "2 long" -> {
-                    mChannel1.vibrationPattern = longArrayOf(0, 1500, 300, 1500)
-                    mChannel2.vibrationPattern = longArrayOf(0, 1500, 300, 1500)
-                }
-                "2 short" -> {
-                    mChannel1.vibrationPattern = longArrayOf(0, 300, 200, 300)
-                    mChannel2.vibrationPattern = longArrayOf(0, 300, 200, 300)
-                }
-                "3 long" -> {
-                    mChannel1.vibrationPattern = longArrayOf(0, 1500, 300, 1500, 300, 1500)
-                    mChannel2.vibrationPattern = longArrayOf(0, 1500, 300, 1500, 300, 1500)
-                }
-                "3 short" -> {
-                    mChannel1.vibrationPattern = longArrayOf(0, 200, 200, 200, 200, 200)
-                    mChannel2.vibrationPattern = longArrayOf(0, 200, 200, 200, 200, 200)
-                }
-                "1 short, 1 long" -> {
-                    mChannel1.vibrationPattern = longArrayOf(0, 200, 200, 1500)
-                    mChannel2.vibrationPattern = longArrayOf(0, 200, 200, 1500)
-                }
-                "2 short, 1 long" -> {
-                    mChannel1.vibrationPattern = longArrayOf(0, 200, 200, 200, 200, 1500)
-                    mChannel2.vibrationPattern = longArrayOf(0, 200, 200, 200, 200, 1500)
                 }
             }
 
-            //Actually create both notification channels
+            // Actually create both notification channels
             notificationManager.createNotificationChannel(mChannel1)
             notificationManager.createNotificationChannel(mChannel2)
 
-            //Tell user it's been created
-            Toast.makeText(applicationContext, name + " notification created", Toast.LENGTH_SHORT).show()
+            // Tell user it's been created
+            Toast.makeText(this, name + " notification created", Toast.LENGTH_SHORT).show()
 
-            //Update list of notification channels using function defined earlier
-            getList()
+            // Add to the notification list
+            var vibrate = vibrateChoice
+            if (vibrate == "none") vibrate = "no vibration"
+            val data = NotificationData(name, vibrate, edgeCheck!!.isChecked) { deleteNotification(name) } // This is how you pass in a function for a param
+            myAdapter.addNotification(data)
         }
     }
 }
