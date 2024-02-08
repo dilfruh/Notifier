@@ -1,6 +1,4 @@
 package com.dil.notifier
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
@@ -9,11 +7,9 @@ import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 
 class NotificationListAdapter(private val items: MutableList<(NotificationData)>) :
@@ -41,7 +37,7 @@ class NotificationListAdapter(private val items: MutableList<(NotificationData)>
         val details: TextView = holder.itemView.findViewById(R.id.details)
         details.text = item.text
 
-        val deleteButton: Button = holder.itemView.findViewById(R.id.deleteButton)
+        val deleteButton: ImageButton = holder.itemView.findViewById(R.id.deleteButton)
         deleteButton.setOnClickListener {
             // Show an "Are you sure?" popup before deleting
             val builder: AlertDialog.Builder = AlertDialog.Builder(holder.itemView.context)
