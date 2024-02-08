@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 
+/**
+ * This is a custom adapter to the recycleview for our notificationList. Call addNotification to add a notification to the list and removeNotification to remove one
+ */
 class NotificationListAdapter() :
     RecyclerView.Adapter<NotificationListAdapter.MyRecyclerViewDataHolder>() {
     inner class MyRecyclerViewDataHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -38,8 +41,7 @@ class NotificationListAdapter() :
 
                 override fun areContentsTheSame(oldItem: NotificationData, newItem: NotificationData): Boolean {
                     // Check if two items have the same content. See if it has been updated
-                    // TODO What about the function? Also comment in NotificationData that you have to remember to change this if you change that
-                    return oldItem.name == newItem.name && oldItem.vibration == newItem.vibration && oldItem.edge == newItem.edge
+                    return oldItem.equals(newItem)
                 }
             }
         )

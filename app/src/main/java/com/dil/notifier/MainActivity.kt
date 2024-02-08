@@ -47,54 +47,6 @@ class MainActivity : AppCompatActivity() {
     )
 
     /**
-     * Get and display list of notification channels. Call this every time app created, create button pressed, or delete button pressed
-     */
-    private fun getList() {
-        // Get list of notification channels
-        var list1: List<NotificationChannel>
-        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        list1 = notificationManager.notificationChannels
-
-        // Get data for each channel
-        for (notif in list1) { // For every item in list1, we will name it notif
-            // Get vibration pattern
-            val notifPattern = notif.vibrationPattern
-            val vibration = vibrations.find { vib -> notifPattern.contentEquals(vib.pattern) }
-            var vibrationText = vibration?.name
-            if (vibrationText == null || vibrationText === "none") vibrationText = "no vibration"
-
-            val notifName = notif.name.toString()
-            // Say if there is supposed to be edge lighting and add vibration pattern
-            if (notifName.contains(" Screen Off (")){
-                // Isolate just app name
-                val appName = notifName.replace(" Screen Off (With Edge Lighting)", "").replace(" Screen Off (No Edge Lighting)", "")
-
-                // Add to notification list
-                val data = NotificationData(appName, vibrationText, notifName.contains(" Screen Off (With Edge Lighting)")) { deleteNotification(appName) } // This is how you pass in a function for a param
-                myAdapter.addNotification(data)
-            }
-            // Don't want to do for ScreenOn because then we'd repeat app names
-        }
-
-        // Add data to list
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        notificationList?.adapter = myAdapter
-        notificationList?.layoutManager = layoutManager
-
-        // Add dividers between items
-        notificationList?.addItemDecoration(
-            DividerItemDecoration(
-                baseContext,
-                layoutManager.orientation
-            )
-        )
-
-        // We don't have to do this now that we use a SortedList
-        // Update list
-        //myAdapter.notifyDataSetChanged()
-    }
-
-    /**
      * checks to see if you have given permission to read notifications, and shows that you need to if not
      */
     private fun getNotificationAccess() {
@@ -178,11 +130,52 @@ class MainActivity : AppCompatActivity() {
             vibrateSpinner!!.adapter = adapter
         }*/
 
-        // Show list of notifications
-        getList()
-
         // Check to see if they have granted permission to notification access
         getNotificationAccess()
+
+        // Show list of notifications
+
+        // Get list of notification channels
+        var list1: List<NotificationChannel>
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        list1 = notificationManager.notificationChannels
+
+        // Get data for each channel
+        for (notif in list1) { // For every item in list1, we will name it notif
+            // Get vibration pattern
+            val notifPattern = notif.vibrationPattern
+            val vibration = vibrations.find { vib -> notifPattern.contentEquals(vib.pattern) }
+            var vibrationText = vibration?.name
+            if (vibrationText == null || vibrationText === "none") vibrationText = "no vibration"
+
+            val notifName = notif.name.toString()
+            // Say if there is supposed to be edge lighting and add vibration pattern
+            if (notifName.contains(" Screen Off (")){
+                // Isolate just app name
+                val appName = notifName.replace(" Screen Off (With Edge Lighting)", "").replace(" Screen Off (No Edge Lighting)", "")
+
+                // Add to notification list
+                val data = NotificationData(appName, vibrationText, notifName.contains(" Screen Off (With Edge Lighting)")) { deleteNotification(appName) } // This is how you pass in a function for a param
+                myAdapter.addNotification(data)
+            }
+            // Don't want to do for ScreenOn because then we'd repeat app names
+        }
+
+        // Add data to list
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        notificationList?.adapter = myAdapter
+        notificationList?.layoutManager = layoutManager
+
+        // Add dividers between items
+        notificationList?.addItemDecoration(
+            DividerItemDecoration(
+                baseContext,
+                layoutManager.orientation
+            )
+        )
+        // We don't have to do this now that we use a SortedList
+        // Update list
+        //myAdapter.notifyDataSetChanged()
     }
 
     override fun onResume() {
