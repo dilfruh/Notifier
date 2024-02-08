@@ -46,21 +46,23 @@ class MainActivity : AppCompatActivity() {
         // Sort list alphabetically by name
         list1.sortBy { it.name?.toString() }
 
-        //Add name of each channel to TextView3
-        notificationList?.text = "\nCurrent Notifications:"
+        val none = longArrayOf(0, 0)
+        val oneLong = longArrayOf(0, 1500)
+        val oneShort = longArrayOf(0, 400)
+        val twoLong = longArrayOf(0, 1500, 300, 1500)
+        val twoShort = longArrayOf(0, 300, 200, 300)
+        val threeLong = longArrayOf(0, 1500, 300, 1500, 300, 1500)
+        val threeShort = longArrayOf(0, 200, 200, 200, 200, 200)
+        val oneShortOneLong = longArrayOf(0, 200, 200, 1500)
+        val twoShortOneLong = longArrayOf(0, 200, 200, 200, 200, 1500)
+
+        var notifications = mutableListOf<NotificationData>()
+
+        // Get data for each channel
         for (notif in list1) { // For every item in list1, we will name it notif
             // Get vibration pattern
             var vibrationText = ""
             val notifPattern = notif.vibrationPattern
-            val none = longArrayOf(0, 0)
-            val oneLong = longArrayOf(0, 1500)
-            val oneShort = longArrayOf(0, 400)
-            val twoLong = longArrayOf(0, 1500, 300, 1500)
-            val twoShort = longArrayOf(0, 300, 200, 300)
-            val threeLong = longArrayOf(0, 1500, 300, 1500, 300, 1500)
-            val threeShort = longArrayOf(0, 200, 200, 200, 200, 200)
-            val oneShortOneLong = longArrayOf(0, 200, 200, 1500)
-            val twoShortOneLong = longArrayOf(0, 200, 200, 200, 200, 1500)
             if (notifPattern.contentEquals(none)) {
                 vibrationText = " no vibration"
             }
@@ -91,38 +93,27 @@ class MainActivity : AppCompatActivity() {
 
             val notifName = notif.name.toString()
             // Say if there is supposed to be edge lighting and add vibration pattern
-            if (notifName.contains(" Screen Off (With Edge Lighting)")){
+            if (notifName.contains(" Screen Off (")){
                 // Isolate just app name
-                val appName = notifName.replace(" Screen Off (With Edge Lighting)", "")
+                val appName = notifName.replace(" Screen Off (With Edge Lighting)", "").replace(" Screen Off (No Edge Lighting)", "")
 
-                // Make the app name bold and underlined
-                val sb: Spannable = SpannableString(appName)
-                sb.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, appName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                sb.setSpan(UnderlineSpan(), 0, appName.length, 0)
-
+                var details = ""
                 // Say the app name, edge lighting, and vibration text
-                notificationList?.append("\n\n")
-                notificationList?.append(sb)
-                notificationList?.append(": Yes Edge Lighting,")
-                notificationList?.append(vibrationText)
-            }
-            else if (notifName.contains(" Screen Off (No Edge Lighting)")){
-                // Isolate just app name
-                val appName = notifName.replace(" Screen Off (No Edge Lighting)", "")
+                if (notifName.contains(" Screen Off (With Edge Lighting)")) details += "Yes Edge Lighting,"
+                else details += "No Edge Lighting,"
+                details += vibrationText
 
-                // Make the app name bold and underlined
-                val sb: Spannable = SpannableString(appName)
-                sb.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, appName.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                sb.setSpan(UnderlineSpan(), 0, appName.length, 0)
-
-                // Say the app name, edge lighting, and vibration text
-                notificationList?.append("\n\n")
-                notificationList?.append(sb)
-                notificationList?.append(": No Edge Lighting,")
-                notificationList?.append(vibrationText)
+                val data = NotificationData(appName, details) { deleteNotification(appName) }
+                notifications.add(data)
             }
             // Don't want to do for ScreenOn because then we'd repeat app names
         }
+        val notiList: RecyclerView = findViewById(R.id.notiList)
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val myAdapter = NotificationListAdapter(notifications)
+        notiList.adapter = myAdapter
+        notiList.layoutManager = layoutManager
+        myAdapter.notifyDataSetChanged()
     }
 
     /**
@@ -169,9 +160,6 @@ class MainActivity : AppCompatActivity() {
 
         // Tell user it's been deleted
         Toast.makeText(this, name + " notification deleted", Toast.LENGTH_SHORT).show()
-
-        // Update list of notification channels using function defined earlier
-        getList()
     }
 
     // When app is created
@@ -218,16 +206,8 @@ class MainActivity : AppCompatActivity() {
             vibrateSpinner!!.adapter = adapter
         }*/
 
-        // Update list of notification channels using function defined earlier
+        // Show list of notifications
         getList()
-
-        var notifications = mutableListOf(NotificationData("1", "One") { deleteNotification("test2") })
-        val notiList: RecyclerView = findViewById(R.id.notiList)
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        val myAdapter = NotificationListAdapter(notifications)
-        notiList.adapter = myAdapter
-        notiList.layoutManager = layoutManager
-        myAdapter.notifyDataSetChanged()
 
         // Check to see if they have granted permission to notification access
         getNotificationAccess()

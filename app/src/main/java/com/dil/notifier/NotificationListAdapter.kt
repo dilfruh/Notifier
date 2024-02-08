@@ -1,6 +1,11 @@
 package com.dil.notifier
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +32,14 @@ class NotificationListAdapter(private val items: MutableList<(NotificationData)>
         val item: NotificationData = items[position]
 
         val appName: TextView = holder.itemView.findViewById(R.id.appName)
-        appName.text = item.name
+        // Make the app name bold and underlined
+        val name: Spannable = SpannableString(item.name + ": ")
+        name.setSpan(StyleSpan(Typeface.BOLD), 0, item.name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        name.setSpan(UnderlineSpan(), 0, item.name.length, 0)
+        appName.text = name
+
+        val details: TextView = holder.itemView.findViewById(R.id.details)
+        details.text = item.text
 
         val deleteButton: Button = holder.itemView.findViewById(R.id.deleteButton)
         deleteButton.setOnClickListener {
