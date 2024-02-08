@@ -5,3 +5,4 @@ data class NotificationData(
     val text: String,
     val delete: () -> Unit
 )
+// TODO See about adding equals function here
