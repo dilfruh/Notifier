@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.SortedList
 import androidx.recyclerview.widget.SortedListAdapterCallback
 
 /**
- * This is a custom adapter to the recycleview for our notificationList. Call addNotification to add a notification to the list and removeNotification to remove one
+ * This is a custom adapter to the RecyclerView for our notificationList. Call addNotification to add a notification to the list and removeNotification to remove one
  */
 class NotificationListAdapter() :
     RecyclerView.Adapter<NotificationListAdapter.MyRecyclerViewDataHolder>() {
