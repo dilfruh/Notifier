@@ -69,13 +69,8 @@ class MainActivity : AppCompatActivity() {
                 // Isolate just app name
                 val appName = notifName.replace(" Screen Off (With Edge Lighting)", "").replace(" Screen Off (No Edge Lighting)", "")
 
-                var details = ""
-                // Say the app name, edge lighting, and vibration text
-                if (notifName.contains(" Screen Off (With Edge Lighting)")) details += "Edge Lighting, "
-                else details += "No Edge Lighting, "
-                details += vibrationText
-
-                val data = NotificationData(appName, details) { deleteNotification(appName) }
+                // Add to notification list
+                val data = NotificationData(appName, vibrationText, notifName.contains(" Screen Off (With Edge Lighting)")) { deleteNotification(appName) } // This is how you pass in a function for a param
                 myAdapter.addNotification(data)
             }
             // Don't want to do for ScreenOn because then we'd repeat app names
@@ -318,15 +313,10 @@ class MainActivity : AppCompatActivity() {
             // Tell user it's been created
             Toast.makeText(this, name + " notification created", Toast.LENGTH_SHORT).show()
 
-            // Add to the list
-            var details = ""
-            // Say the app name, edge lighting, and vibration text
-            if (edgeCheck!!.isChecked) details += "Edge Lighting, "
-            else details += "No Edge Lighting, "
+            // Add to the notification list
             var vibrate = vibrateChoice
             if (vibrate == "none") vibrate = "no vibration"
-            details += vibrate
-            val data = NotificationData(name, details) { deleteNotification(name) }
+            val data = NotificationData(name, vibrate, edgeCheck!!.isChecked) { deleteNotification(name) } // This is how you pass in a function for a param
             myAdapter.addNotification(data)
         }
     }

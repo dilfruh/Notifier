@@ -39,7 +39,7 @@ class NotificationListAdapter() :
                 override fun areContentsTheSame(oldItem: NotificationData, newItem: NotificationData): Boolean {
                     // Check if two items have the same content. See if it has been updated
                     // TODO What about the function? Also comment in NotificationData that you have to remember to change this if you change that
-                    return oldItem.name == newItem.name && oldItem.text == newItem.text
+                    return oldItem.name == newItem.name && oldItem.vibration == newItem.vibration && oldItem.edge == newItem.edge
                 }
             }
         )
@@ -63,7 +63,12 @@ class NotificationListAdapter() :
         appName.text = name
 
         val details: TextView = holder.itemView.findViewById(R.id.details)
-        details.text = item.text
+        var text = ""
+        // Say the app name, edge lighting, and vibration text
+        if (item.edge) text += "Edge Lighting, "
+        else text += "No Edge Lighting, "
+        text += item.vibration
+        details.text = text
 
         val deleteButton: ImageButton = holder.itemView.findViewById(R.id.deleteButton)
         deleteButton.setOnClickListener {
