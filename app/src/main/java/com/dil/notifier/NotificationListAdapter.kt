@@ -32,7 +32,7 @@ class NotificationListAdapter() :
 
                 override fun areItemsTheSame(item1: NotificationData, item2: NotificationData): Boolean {
                     // Check if two items represent the same data (unique identifier)
-                    // TODO Does this have to be unique?
+                    // So if you add an item with the same name, but different content. It will remove the old content and add the new (basically update)
                     return item1.name == item2.name
                 }
 

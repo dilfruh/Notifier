@@ -241,13 +241,11 @@ class MainActivity : AppCompatActivity() {
      * When the create button is clicked, create a vibration and edge lighting for the info typed/selected
      */
     fun createClicked(view: View) {
-        // TODO: test edit
         // Get name from editText field and convert to String
         val name: String = editAppName?.getText().toString()
 
         // Create as long as they inputted a name
         if (name != "") {
-
             // Delete notification channels with that name in case they are editing existing one
             var list1: List<NotificationChannel> = ArrayList()
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
