@@ -162,9 +162,10 @@
         <!-- Here, our MainActivity will insert the list of all the apps we've given custom notifications to and the info about those -->
         <TextView
             android:id="@+id/listHeader"
-            android:text="Current notifications:"
-            android:textSize="22sp"
+            android:text="Current Notifications:"
+            android:textSize="28sp"
             android:textColor="@color/black"
+            android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/createButton"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

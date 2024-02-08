@@ -53,22 +53,22 @@ class NotificationListAdapter() :
 
     // Update the layout for notification_list_item based on the position (index of the item in the items we passed in
     override fun onBindViewHolder(holder: MyRecyclerViewDataHolder, position: Int) {
+        // Display text content of data in list
         val item: NotificationData = items[position]
 
         val appName: TextView = holder.itemView.findViewById(R.id.appName)
         // Make the app name bold and underlined
-        val name: Spannable = SpannableString(item.name + ": ")
+        val name: Spannable = SpannableString(item.name)
         name.setSpan(StyleSpan(Typeface.BOLD), 0, item.name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         name.setSpan(UnderlineSpan(), 0, item.name.length, 0)
         appName.text = name
 
-        val details: TextView = holder.itemView.findViewById(R.id.details)
-        var text = ""
-        // Say the app name, edge lighting, and vibration text
-        if (item.edge) text += "Edge Lighting, "
-        else text += "No Edge Lighting, "
-        text += item.vibration
-        details.text = text
+        val vibrationText: TextView = holder.itemView.findViewById(R.id.vibrationText)
+        vibrationText.text = item.vibration
+
+        val edgeText: TextView = holder.itemView.findViewById(R.id.edgeText)
+        if (item.edge) edgeText.text = "Edge Lighting"
+        else edgeText.text = "No Edge Lighting"
 
         val deleteButton: ImageButton = holder.itemView.findViewById(R.id.deleteButton)
         deleteButton.setOnClickListener {
