@@ -10,8 +10,11 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SortedList
+import androidx.recyclerview.widget.SortedListAdapterCallback
 
 /**
  * This is where most of the action happens
@@ -20,7 +23,8 @@ class MainActivity : AppCompatActivity() {
     // Set up buttons, textViews, editTexts, spinners, checkboxes
     var accessText: TextView? = null
     var vibrationText: TextView? = null
-    var notificationList: TextView? = null
+    var listHeader: TextView? = null
+    var infoTooltip: TextView? = null
     var instructionsButton: Button? = null
     var accessButton: Button? = null
     var createButton: Button? = null
@@ -28,7 +32,8 @@ class MainActivity : AppCompatActivity() {
     var vibrateSpinner: Spinner? = null
     var edgeCheck: CheckBox? = null
     var infoIcon: ImageButton? = null
-    var infoTooltip: TextView? = null
+    var notificationList: RecyclerView? = null
+    val myAdapter = NotificationListAdapter()
 
     /**
      * Get and display list of notification channels. Call this every time app created, create button pressed, or delete button pressed
@@ -38,8 +43,6 @@ class MainActivity : AppCompatActivity() {
         var list1: List<NotificationChannel>
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         list1 = notificationManager.notificationChannels
-        // Sort list alphabetically by name
-        list1.sortBy { it.name?.toString() }
 
         val none = longArrayOf(0, 0)
         val oneLong = longArrayOf(0, 1500)
@@ -50,8 +53,6 @@ class MainActivity : AppCompatActivity() {
         val threeShort = longArrayOf(0, 200, 200, 200, 200, 200)
         val oneShortOneLong = longArrayOf(0, 200, 200, 1500)
         val twoShortOneLong = longArrayOf(0, 200, 200, 200, 200, 1500)
-
-        var notifications = mutableListOf<NotificationData>()
 
         // Get data for each channel
         for (notif in list1) { // For every item in list1, we will name it notif
@@ -94,21 +95,32 @@ class MainActivity : AppCompatActivity() {
 
                 var details = ""
                 // Say the app name, edge lighting, and vibration text
-                if (notifName.contains(" Screen Off (With Edge Lighting)")) details += "Yes Edge Lighting,"
+                if (notifName.contains(" Screen Off (With Edge Lighting)")) details += "Edge Lighting,"
                 else details += "No Edge Lighting,"
                 details += vibrationText
 
                 val data = NotificationData(appName, details) { deleteNotification(appName) }
-                notifications.add(data)
+                myAdapter.addNotification(data)
             }
             // Don't want to do for ScreenOn because then we'd repeat app names
         }
-        val notiList: RecyclerView = findViewById(R.id.notiList)
+
+        // Add data to list
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        val myAdapter = NotificationListAdapter(notifications)
-        notiList.adapter = myAdapter
-        notiList.layoutManager = layoutManager
-        myAdapter.notifyDataSetChanged()
+        notificationList?.adapter = myAdapter
+        notificationList?.layoutManager = layoutManager
+
+        // Add dividers between items
+        notificationList?.addItemDecoration(
+            DividerItemDecoration(
+                baseContext,
+                layoutManager.orientation
+            )
+        )
+
+        // We don't have to do this now that we use a SortedList
+        // Update list
+        //myAdapter.notifyDataSetChanged()
     }
 
     /**
@@ -162,17 +174,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Create buttons, textViews, editTexts, checkboxes
+        // Create buttons, textViews, editTexts, checkboxes, etc.
         accessText = findViewById<TextView>(R.id.accessText)
         vibrationText = findViewById<TextView>(R.id.vibrationText)
-        notificationList = findViewById<TextView>(R.id.notificationList)
+        listHeader = findViewById<TextView>(R.id.listHeader)
+        infoTooltip = findViewById<TextView>(R.id.infoTooltip)
         instructionsButton = findViewById<Button>(R.id.instructionsButton)
         accessButton = findViewById<Button>(R.id.accessButton)
         createButton = findViewById<Button>(R.id.createButton)
         editAppName = findViewById<EditText>(R.id.editAppName)
         edgeCheck = findViewById<CheckBox>(R.id.edgeCheck)
         infoIcon = findViewById<ImageButton>(R.id.infoIcon)
-        infoTooltip = findViewById<TextView>(R.id.infoTooltip)
+        notificationList = findViewById<RecyclerView>(R.id.notificationList)
 
         // Create spinner (drop down menu)
         vibrateSpinner = findViewById<Spinner>(R.id.vibrateSpinner)
@@ -306,6 +319,7 @@ class MainActivity : AppCompatActivity() {
      * When the create button is clicked, create a vibration and edge lighting for the info typed/selected
      */
     fun createClicked(view: View) {
+        // TODO: test edit
         // Get name from editText field and convert to String
         val name: String = editAppName?.getText().toString()
 
@@ -333,6 +347,7 @@ class MainActivity : AppCompatActivity() {
             // Change screen off channel name according to if wake screen is on or off
             var CHANNEL_ID2 = ""
             var name2 = ""
+            // TODO !! vs ?
             if (edgeCheck!!.isChecked) { //!! is just safety for non null
                 CHANNEL_ID2 = name + "ScreenOffWakeUp"
                 name2 = name + " Screen Off (With Edge Lighting)"
@@ -409,8 +424,14 @@ class MainActivity : AppCompatActivity() {
             // Tell user it's been created
             Toast.makeText(this, name + " notification created", Toast.LENGTH_SHORT).show()
 
-            // Update list of notification channels using function defined earlier
-            getList()
+            // Add to the list
+            var details = ""
+            // Say the app name, edge lighting, and vibration text
+            if (edgeCheck!!.isChecked) details += "Edge Lighting,"
+            else details += "No Edge Lighting,"
+            details += vibrateChoice
+            val data = NotificationData(name, details) { deleteNotification(name) }
+            myAdapter.addNotification(data)
         }
     }
 }

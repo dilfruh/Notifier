@@ -11,11 +11,39 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SortedList
+import androidx.recyclerview.widget.SortedListAdapterCallback
 
-class NotificationListAdapter(private val items: MutableList<(NotificationData)>) :
+class NotificationListAdapter() :
     RecyclerView.Adapter<NotificationListAdapter.MyRecyclerViewDataHolder>() {
     inner class MyRecyclerViewDataHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
+    // items that will be shown in the RecyclerView list
+    private val items: SortedList<NotificationData>
+
+    init {
+        items = SortedList(
+            NotificationData::class.java,
+            object : SortedListAdapterCallback<NotificationData>(this) {
+                override fun compare(a: NotificationData, b: NotificationData): Int {
+                    // Sort by name in ascending order
+                    return a.name.compareTo(b.name)
+                }
+
+                override fun areItemsTheSame(item1: NotificationData, item2: NotificationData): Boolean {
+                    // Check if two items represent the same data (unique identifier)
+                    // TODO Does this have to be unique?
+                    return item1.name == item2.name
+                }
+
+                override fun areContentsTheSame(oldItem: NotificationData, newItem: NotificationData): Boolean {
+                    // Check if two items have the same content. See if it has been updated
+                    // TODO What about the function? Also comment in NotificationData that you have to remember to change this if you change that
+                    return oldItem.name == newItem.name && oldItem.text == newItem.text
+                }
+            }
+        )
+    }
     // Say the layout for each item in the RecyclerView is based on notification_list_item
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyRecyclerViewDataHolder {
         val view: View =
@@ -49,9 +77,7 @@ class NotificationListAdapter(private val items: MutableList<(NotificationData)>
                     item.delete() // This had to be passed in because some classes/functions couldn't be resolved here
 
                     // Remove it from the list
-                    items.removeAt(position)
-                    // Tell the recyclerView that the list has changed, so it will update the screen and remove the item
-                    notifyItemRemoved(position)
+                    removeNotification(position)
                 }
                 .setNegativeButton("Cancel") { dialog, which ->
                     // Do nothing
@@ -64,6 +90,32 @@ class NotificationListAdapter(private val items: MutableList<(NotificationData)>
 
     // For some reason we have to do this
     override fun getItemCount(): Int {
-        return items.size
+        return items.size()
+    }
+
+    /*** Functions used to add and remove items. Call these after creating your adapter ***/
+
+    /**
+     * adds an NotificationData item to the list for the adapter to show
+     * @param item Notification data you want to add
+     */
+    fun addNotification(item: NotificationData) {
+        items.add(item)
+
+        // We don't have to do this now that we used a SortedList
+        // Tell the recyclerView that the list has changed, so it will update the screen and remove the item
+        // notifyItemInserted(position)
+    }
+
+    /**
+     * removes an NotificationData item to the list that the adapter shows at the inputted index
+     * @param index index in the list of the Notification data you want to remove
+     */
+    fun removeNotification(index: Int) {
+        items.removeItemAt(index)
+
+        // We don't have to do this now that we used a SortedList
+        // Tell the recyclerView that the list has changed, so it will update the screen and remove the item
+        // notifyItemRemoved(position)
     }
 }
